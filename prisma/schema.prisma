@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  services     Service[]
+  clients      Client[]
+  appointments Appointment[]
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  tenantId    String
+  name        String
+  duration    Int      // minutes
+  price       Float
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  appointments Appointment[]
+
+  @@index([tenantId])
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  email     String?
+  phone     String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  appointments Appointment[]
+
+  @@index([tenantId])
+}
+
+model Appointment {
+  id         String   @id @default(uuid())
+  tenantId   String
+  clientId   String
+  serviceId  String
+  dateTime   DateTime
+  notes      String?
+  status     AppointmentStatus @default(SCHEDULED)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  client   Client   @relation(fields: [clientId], references: [id])
+  service  Service  @relation(fields: [serviceId], references: [id])
+
+  @@index([tenantId])
+  @@index([clientId])
+  @@index([serviceId])
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
