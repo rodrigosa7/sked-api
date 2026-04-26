@@ -46,11 +46,13 @@ export const buildApp = () => {
   // Make auth service available to routes
   app.decorate('authService', authService);
 
-  // Register routes
-  app.register(authRoutes);
-  app.register(servicesRoutes);
-  app.register(clientsRoutes);
-  app.register(appointmentsRoutes);
+  // Register routes under /api/v1 prefix
+  app.register(async (app) => {
+    app.register(authRoutes);
+    app.register(servicesRoutes);
+    app.register(clientsRoutes);
+    app.register(appointmentsRoutes);
+  }, { prefix: '/api/v1' });
 
   return app;
 };
