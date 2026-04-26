@@ -5,6 +5,7 @@ import { authService } from './services/auth.service';
 import { authRoutes } from './routes/auth';
 import { servicesRoutes } from './routes/services';
 import { clientsRoutes } from './routes/clients';
+import { appointmentsRoutes } from './routes/appointments';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -25,6 +26,7 @@ export const buildApp = () => {
   app.register(authRoutes);
   app.register(servicesRoutes);
   app.register(clientsRoutes);
+  app.register(appointmentsRoutes);
 
   return app;
 };
