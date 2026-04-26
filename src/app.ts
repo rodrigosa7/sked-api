@@ -4,6 +4,7 @@ import jwt from '@fastify/jwt';
 import { authService } from './services/auth.service';
 import { authRoutes } from './routes/auth';
 import { servicesRoutes } from './routes/services';
+import { clientsRoutes } from './routes/clients';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -23,6 +24,7 @@ export const buildApp = () => {
   // Register routes
   app.register(authRoutes);
   app.register(servicesRoutes);
+  app.register(clientsRoutes);
 
   return app;
 };
